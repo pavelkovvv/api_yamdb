@@ -17,6 +17,11 @@ class User(AbstractUser):
         max_length=150,
         unique=True
     )
+    email = models.EmailField(
+        verbose_name='Электронная почта',
+        max_length=250,
+        unique=True,
+    )
     first_name = models.TextField(
         max_length=150,
         blank=True
@@ -25,14 +30,20 @@ class User(AbstractUser):
         max_length=150,
         blank=True
     )
-    """ email = models.EmailField(
-        verbose_name='Электронная почта',
-        max_length=250,
-        unique=True,
-    ) """
+    bio = models.TextField(
+        verbose_name='Биография',
+        blank=True,
+    )
     role = models.CharField(
-        verbose_name='Статус',
+        verbose_name='Статус пользователя',
         max_length=50,
         choices=ROLES,
         default=USER
     )
+
+
+class Meta:
+    ordering = ('username',)
+
+    def __str__(self):
+        return self.username
