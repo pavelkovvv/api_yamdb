@@ -1,3 +1,11 @@
 from django.db import models
 
-# Create your models here.
+
+class Review(models.Model):
+    """Модель отзывы на произведения."""
+    pass
+
+
+class Comment(models.Model):
+    """Модель комментарии к отзывам."""
+    pass
