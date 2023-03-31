@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.contrib.auth import get_user_model
 
 
 class User(AbstractUser):
@@ -41,10 +42,19 @@ class User(AbstractUser):
         choices=ROLES,
         default=USER
     )
+    confirmation_code = models.CharField(
+        verbose_name='Код подтверждения',
+        max_length=150,
+        default=None
+    )
 
 
 class Meta:
     ordering = ('username',)
+    unique_together = ('username', 'email')
 
     def __str__(self):
         return self.username
+
+
+User = get_user_model()

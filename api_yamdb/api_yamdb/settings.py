@@ -24,6 +24,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework_simplejwt',
     'users.apps.UsersConfig',
     'reviews',
     'api.apps.ApiConfig',
@@ -91,7 +93,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 
-LANGUAGE_CODE = 'RU'
+LANGUAGE_CODE = 'ru-ru'
+
 
 TIME_ZONE = 'UTC'
 
@@ -117,9 +120,9 @@ AUTH_USER_MODEL = 'users.User'
 # DRF Settings
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    },
+    ),
 }
 
 SIMPLE_JWT = {
