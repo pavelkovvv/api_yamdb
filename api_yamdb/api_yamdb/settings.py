@@ -1,4 +1,7 @@
+import os
+
 from pathlib import Path
+from datetime import timedelta
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,6 +26,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'users.apps.UsersConfig',
     'reviews',
+    'api.apps.ApiConfig',
 ]
 
 MIDDLEWARE = [
@@ -108,3 +112,17 @@ STATICFILES_DIRS = ((BASE_DIR / 'static/'),)
 # User model
 
 AUTH_USER_MODEL = 'users.User'
+
+
+# DRF Settings
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': {
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    },
+}
+
+SIMPLE_JWT = {
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=24),
+}
