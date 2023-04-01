@@ -15,7 +15,7 @@
 ![Python](https://www.python.org/static/community_logos/python-logo-generic.svg)
 ![Django](https://static.djangoproject.com/img/logos/django-logo-positive.svg)
 
-## Запуск проекта.
+## Запуск проекта
 
 Клонируйте репозиторий и перейдите в него в командной строке:
 
