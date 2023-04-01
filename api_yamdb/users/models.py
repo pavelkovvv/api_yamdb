@@ -45,16 +45,37 @@ class User(AbstractUser):
     confirmation_code = models.CharField(
         verbose_name='Код подтверждения',
         max_length=150,
+        null=True,
         default=None
     )
 
+    class Meta:
+        ordering = ('username',)
+        unique_together = ('username', 'email')
 
-class Meta:
-    ordering = ('username',)
-    unique_together = ('username', 'email')
+        def __str__(self):
+            return self.username
 
-    def __str__(self):
-        return self.username
+    @property
+    def is_user(self):
+        if self.role == self.USER:
+            return True
+        else:
+            return False
+
+    @property
+    def is_moderator(self):
+        if self.role == self.MODERATOR:
+            return True
+        else:
+            return False
+
+    @property
+    def is_admin(self):
+        if self.role == self.ADMIN:
+            return True
+        else:
+            return False
 
 
 User = get_user_model()
