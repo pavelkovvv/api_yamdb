@@ -5,15 +5,6 @@ from django.core.mail import send_mail
 from users.models import User
 from api_yamdb.settings import EMAIL_ADMIN
 
-def get_object_or_none(model, *args, **kwargs):
-    """Функция для проверки существует ли объект в БД, если нет, то
-    вернёт None"""
-
-    try:
-        return model.objects.get(*args, **kwargs)
-    except model.DoesNotExist:
-        return None
-
 
 def generate_confirmation_code_and_send_email(username, mail):
     """Функция для генерации кода подтверждения и отправки

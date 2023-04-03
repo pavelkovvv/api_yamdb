@@ -1,6 +1,7 @@
-from rest_framework import (status, viewsets, permissions, filters)
+from rest_framework import status, viewsets, filters
 
-from rest_framework.decorators import api_view
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -8,9 +9,8 @@ from django.shortcuts import get_object_or_404
 
 from .serializers import (UserSerializer, SignUpSerializer, JWTTokenSerializer)
 from users.models import User
-from .permissions import (OnlyAdmin, IsAuthPermission)
-from .utils import (get_object_or_none,
-                    generate_confirmation_code_and_send_email)
+from .permissions import (OnlyAdmin, )
+from .utils import generate_confirmation_code_and_send_email
 
 
 @api_view(['POST'])
@@ -69,9 +69,29 @@ class UserViewSet(viewsets.ModelViewSet):
 
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    http_method_names = ('get', 'post', 'patch', 'delete')
     permission_classes = (OnlyAdmin,)
     filter_backends = (filters.SearchFilter, )
     search_fields = ('=username', )
     lookup_field = 'username'
+
+    @action(
+        detail=False,
+        methods=('get', 'patch'),
+        url_path='me',
+        permission_classes=(IsAuthenticated, )
+    )
+    def me(self, request):
+        if request.method == 'PATCH':
+            serializer = UserSerializer(
+                request.user,
+                data=request.data,
+                partial=True
+            )
+            serializer.is_valid(raise_exception=True)
+            serializer.save(role=request.user.role)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
