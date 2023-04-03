@@ -5,6 +5,16 @@ from users.models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(validators=[
+        RegexValidator(
+            regex=r'^[\w.@+-]+$',
+            message='Неккоректно введён <username>',
+            code='invalid_username'
+        )
+    ],
+        max_length=150
+    )
+
     class Meta:
         model = User
         fields = (
@@ -33,6 +43,19 @@ class SignUpSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('email', 'username')
+
+
+class SignUpSerializerAgain(serializers.Serializer):
+    username = serializers.CharField(validators=[
+        RegexValidator(
+            regex=r'^[\w.@+-]+$',
+            message='Неккоректно введён <username>',
+            code='invalid_username'
+        )
+    ],
+        max_length=150
+    )
+    email = serializers.CharField(max_length=254)
 
 
 class JWTTokenSerializer(serializers.Serializer):

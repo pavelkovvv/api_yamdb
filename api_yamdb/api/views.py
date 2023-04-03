@@ -1,4 +1,4 @@
-from rest_framework import status
+from rest_framework import (status, viewsets, permissions, filters)
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404
 
 from .serializers import (UserSerializer, SignUpSerializer, JWTTokenSerializer)
 from users.models import User
+from .permissions import (OnlyAdmin, IsAuthPermission)
 from .utils import (get_object_or_none,
                     generate_confirmation_code_and_send_email)
 
@@ -60,3 +61,17 @@ def token_function(request):
             status=status.HTTP_400_BAD_REQUEST
         )
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    """Вьюсет для получения, обновления и удаления информации
+    о пользователях"""
+
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = (OnlyAdmin,)
+    filter_backends = (filters.SearchFilter, )
+    search_fields = ('=username', )
+    lookup_field = 'username'
+
+

@@ -15,9 +15,9 @@ class User(AbstractUser):
     ]
 
     username = models.CharField(
-        verbose_name='Имя пользователя',
-        max_length=150,
-        unique=True
+       verbose_name='Имя пользователя',
+       max_length=150,
+       unique=True
     )
     email = models.EmailField(
         verbose_name='Электронная почта',

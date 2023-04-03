@@ -16,9 +16,37 @@ class IsAdminOrReadOnlyPermission(permissions.BasePermission):
     def has_permission(self, request, view):
         return (
                 request.user.is_admin or
-                (request.user.is_authenticated and
-                 request.method in permissions.SAFE_METHODS)
+                request.user.is_staff or
+                request.method in permissions.SAFE_METHODS
+        )
+
+
+class AuthorOrModerOrAdmin(permissions.BasePermission):
+    """Пользовательское разрешение, позволяющее выполнять действия,
+    если ваша роль соответствует следующим: автор, модератор или Вы
+    являетесь автором объекта"""
+
+    def has_permission(self, request, view):
+        return request.user.is_authenticated
+
+    def has_object_permission(self, request, view, obj):
+        return (
+            request.user.is_moderator or
+            request.user.is_admin or
+            request.user.is_staff or
+            obj.author == request.user
+        )
+
+
+class OnlyAdmin(permissions.BasePermission):
+    """Пользовательское разрешение, позволяющее выполнять действия
+    только администратору"""
+
+    def has_permission(self, request, view):
+        return (
+                request.user.is_staff
+                or (
+                    request.user.is_authenticated
+                    and request.user.is_admin
                 )
-
-
-!!!!!ДОПИСАТЬ РАЗРЕШЕНИЯ И ПЕРЕЙТИ К СОЗДАНИЮ ЕНДПОИНТА USERS (вьюсеты для него и т.п., пример в предыдущем спринте)
+        )
