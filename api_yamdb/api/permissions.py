@@ -14,10 +14,8 @@ class IsAdminOrReadOnlyPermission(permissions.BasePermission):
     действия только администратору или если это безопасный метод"""
 
     def has_permission(self, request, view):
-        return (
-                request.user.is_admin or
-                (request.user.is_authenticated and
-                 request.method in permissions.SAFE_METHODS)
+        return (request.user.is_authenticated and request.user.is_admin
+                or request.method in permissions.SAFE_METHODS
                 )
 
 
@@ -29,4 +27,5 @@ class IsAdminUser(permissions.BasePermission):
                 and (request.user.is_admin or request.user.is_superuser))
 
 
-# !!!!!ДОПИСАТЬ РАЗРЕШЕНИЯ И ПЕРЕЙТИ К СОЗДАНИЮ ЕНДПОИНТА USERS (вьюсеты для него и т.п., пример в предыдущем спринте)
+# !!!!!ДОПИСАТЬ РАЗРЕШЕНИЯ И ПЕРЕЙТИ К СОЗДАНИЮ ЕНДПОИНТА USERS
+# (вьюсеты для него и т.п., пример в предыдущем спринте)

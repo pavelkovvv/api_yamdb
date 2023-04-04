@@ -41,7 +41,7 @@ class TitleViewSet(viewsets.ModelViewSet):
         return GetTitleSerializer
 
 
-class GenreViewSet(ModelMixinSet):
+class GenresViewSet(ModelMixinSet):
     """ViewSet жанров."""
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer

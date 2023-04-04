@@ -8,7 +8,7 @@ from titles.models import Genre, Category, Title
 
 class GenreSerializer(serializers.ModelSerializer):
     """Сериализатор жанров."""
-    
+
     class Meta:
         exclude = ('id',)
         model = Genre
@@ -16,7 +16,7 @@ class GenreSerializer(serializers.ModelSerializer):
 
 class CategorySerializer(serializers.ModelSerializer):
     """Сериализатор категорий."""
-    
+
     class Meta:
         exclude = ('id',)
         model = Category
@@ -49,7 +49,7 @@ class GetTitleSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    
+
     class Meta:
         model = User
         fields = (
