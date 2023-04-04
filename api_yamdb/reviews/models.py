@@ -2,22 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
-
-
-class Category(models.Model):
-    """Модель для создания категорий (типов) произведений."""
-    pass
-
-
-class Genre(models.Model):
-    """Модель для создания жанров произведений."""
-    pass
-
-
-class Title(models.Model):
-    """Модель для создания произведений, к которым пишут отзывы."""
-    pass
-
+from titles.models import Title
 
 class Review(models.Model):
     """Модель для отзыва."""
