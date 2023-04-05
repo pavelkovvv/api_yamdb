@@ -4,6 +4,7 @@ from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 from titles.models import Title
 
+
 class Review(models.Model):
     """Модель для отзыва."""
     text = models.TextField(verbose_name='Текст отзыва')

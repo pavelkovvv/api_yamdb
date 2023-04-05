@@ -23,8 +23,8 @@ from .serializers import (UserSerializer, SignUpSerializer,
                           CategorySerializer, ReviewSerializer,
                           CommentSerializer)
 
-from .utils import (get_object_or_none,
-                    generate_confirmation_code_and_send_email)
+from .utils import (generate_confirmation_code_and_send_email)
+# get_object_or_none,
 
 
 class TitleViewSet(viewsets.ModelViewSet):
@@ -66,7 +66,7 @@ class CategoryViewSet(ModelMixinSet):
     lookup_field = 'slug'
 
 
-class UserViewSet(viewsets.ModelViewsSet):
+class UserViewSet(viewsets.ModelViewSet):
     """ViewSet User"""
     queryset = User.objects.all()
     permission_classes = (IsAdminUser,)
