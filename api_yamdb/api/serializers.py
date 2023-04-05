@@ -1,11 +1,55 @@
+from django.db.models import Avg
 from rest_framework import serializers
 
 from django.core.validators import RegexValidator
+from django.shortcuts import get_object_or_404
 
 from users.models import User
+from titles.models import Genre, Category, Title
 from reviews.models import Review, Comment
-from titles.models import Title
-from django.shortcuts import get_object_or_404
+
+
+class GenreSerializer(serializers.ModelSerializer):
+    """Сериализатор жанров."""
+
+    class Meta:
+        exclude = ('id',)
+        model = Genre
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    """Сериализатор категорий."""
+
+    class Meta:
+        exclude = ('id',)
+        model = Category
+
+
+class TitleSerializer(serializers.ModelSerializer):
+    """Сериализатор произведения."""
+    
+    genre = GenreSerializer(read_only=True, many=True)
+    category = CategorySerializer(read_only=True)
+    rating = serializers.IntegerField(required=False)
+
+    class Meta:
+        model = Title
+        fields = '__all__'
+        read_only_fields = ('id',)
+
+
+class GetTitleSerializer(serializers.ModelSerializer):
+    genre = GenreSerializer(many=True)
+    category = CategorySerializer()
+    rating = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Title
+        fields = '__all__'
+
+    def get_rating(self, obj):
+        rating = obj.reviews.aggregate(Avg('score'))
+        return rating.get('score__avg')
 
 
 class UserSerializer(serializers.ModelSerializer):

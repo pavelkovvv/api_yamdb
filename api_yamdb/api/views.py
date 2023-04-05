@@ -1,21 +1,92 @@
 from rest_framework import status, viewsets, filters
 
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.filters import SearchFilter
+from django.db.models import Avg
+from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
 
-
-from .serializers import (UserSerializer, SignUpSerializer,
-                          JWTTokenSerializer, ReviewSerializer,
-                          CommentSerializer)
 from users.models import User
-from titles.models import Title
+from titles.models import Title, Genre, Category
 from reviews.models import Review
-from .permissions import (OnlyAdmin, IsAuthorAdminModeratorOrReadOnly)
-from .utils import generate_confirmation_code_and_send_email
+from .mixins import ModelMixinSet
+from .filters import TitleFilter
+from .permissions import (IsAdminOrReadOnlyPermission, IsAdminUser,
+                          OnlyAdmin, IsAuthorAdminModeratorOrReadOnly)
+from .serializers import (UserSerializer, SignUpSerializer,
+                          JWTTokenSerializer, GetTitleSerializer,
+                          TitleSerializer, GenreSerializer,
+                          CategorySerializer, ReviewSerializer,
+                          CommentSerializer)
+
+from .utils import (get_object_or_none,
+                    generate_confirmation_code_and_send_email)
+
+
+class TitleViewSet(viewsets.ModelViewSet):
+    """ViewSet произведения."""
+    queryset = Title.objects.annotate(
+        rating=Avg('reviews__score')).prefetch_related(
+        'category', 'genre'
+    )
+    serializer_class = TitleSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filter_class = TitleFilter
+    permission_classes = (IsAdminOrReadOnlyPermission,)
+
+    def get_serializer_class(self):
+        if self.request.method in ('POST', 'PATCH'):
+            return TitleSerializer
+        return GetTitleSerializer
+
+
+class GenresViewSet(ModelMixinSet):
+    """ViewSet жанров."""
+    queryset = Genre.objects.all()
+    serializer_class = GenreSerializer
+    permission_classes = (IsAdminOrReadOnlyPermission,)
+    filter_backends = (SearchFilter, )
+    filterset_fields = ('name', 'slug')
+    search_fields = ('name', 'slug')
+    lookup_field = 'slug'
+
+
+class CategoryViewSet(ModelMixinSet):
+    """ViewSet категорий."""
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    permission_classes = (IsAdminOrReadOnlyPermission,)
+    filter_backends = (SearchFilter,)
+    filterset_fields = ('name', 'slug')
+    search_fields = ('name', 'slug',)
+    lookup_field = 'slug'
+
+
+class UserViewSet(viewsets.ModelViewsSet):
+    """ViewSet User"""
+    queryset = User.objects.all()
+    permission_classes = (IsAdminUser,)
+    serializer_class = UserSerializer
+
+    @action(detail=False,
+            methods=(['GET', 'PATCH']),
+            permission_classes=[IsAuthenticated])
+    def me(self, request):
+        """Получение данных текущего зарегистрированного пользователя."""
+        if request.method == 'GET':
+            serializer = UserSerializer(request.user)
+            return Response(serializer.data)
+
+        serializer = UserSerializer(
+            request.user, data=request.data, partial=True,
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save(role=request.user.role)
+        return Response(serializer.data)
 
 
 @api_view(['POST'])
@@ -47,6 +118,14 @@ def signup_function(request):
             'Вы неверно указали почту!',
             status=status.HTTP_400_BAD_REQUEST
         )
+
+
+class CommentViewSet(viewsets.ModelViewSet):
+    pass
+
+
+class ReviewViewSet(viewsets.ModelViewSet):
+    pass
 
 
 @api_view(['POST'])

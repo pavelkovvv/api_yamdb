@@ -6,7 +6,7 @@ from django.core.validators import MaxValueValidator
 class Genre(models.Model):
     """Модель жанры произведений."""
     name = models.CharField(
-        max_length=150,
+        max_length=256,
         verbose_name='Название')
     slug = models.SlugField(
         max_length=50,
@@ -25,7 +25,7 @@ class Genre(models.Model):
 class Category(models.Model):
     """Модель типы произведений."""
     name = models.CharField(
-        max_length=150,
+        max_length=256,
         verbose_name='Название')
     slug = models.SlugField(
         max_length=50,
@@ -44,7 +44,7 @@ class Category(models.Model):
 class Title(models.Model):
     """Модель произведения, к которым пишут отзывы."""
     name = models.CharField(
-        max_length=150,
+        max_length=256,
         verbose_name='Название')
     year = models.IntegerField(
         validators=[
