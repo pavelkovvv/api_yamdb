@@ -15,31 +15,30 @@ from titles.models import Title, Genre, Category
 from reviews.models import Review
 from .mixins import ModelMixinSet
 from .filters import TitleFilter
-from .permissions import (IsAdminOrReadOnlyPermission, IsAdminUser,
-                          OnlyAdmin, IsAuthorAdminModeratorOrReadOnly)
+from .permissions import (IsAdminOrReadOnlyPermission, OnlyAdmin,
+                          IsAuthorAdminModeratorOrReadOnly)
 from .serializers import (UserSerializer, SignUpSerializer,
                           JWTTokenSerializer, GetTitleSerializer,
                           TitleSerializer, GenreSerializer,
                           CategorySerializer, ReviewSerializer,
                           CommentSerializer)
 
-from .utils import (get_object_or_none,
-                    generate_confirmation_code_and_send_email)
+from .utils import (generate_confirmation_code_and_send_email)
 
 
 class TitleViewSet(viewsets.ModelViewSet):
     """ViewSet произведения."""
     queryset = Title.objects.annotate(
-        rating=Avg('reviews__score')).prefetch_related(
+        rating=Avg('reviews__score')).order_by(
         'category', 'genre'
     )
     serializer_class = TitleSerializer
     filter_backends = (DjangoFilterBackend,)
-    filter_class = TitleFilter
+    filterset_class = TitleFilter
     permission_classes = (IsAdminOrReadOnlyPermission,)
 
     def get_serializer_class(self):
-        if self.request.method in ('POST', 'PATCH'):
+        if self.action in ('list', 'retrieve'):
             return TitleSerializer
         return GetTitleSerializer
 
@@ -64,29 +63,6 @@ class CategoryViewSet(ModelMixinSet):
     filterset_fields = ('name', 'slug')
     search_fields = ('name', 'slug',)
     lookup_field = 'slug'
-
-
-class UserViewSet(viewsets.ModelViewsSet):
-    """ViewSet User"""
-    queryset = User.objects.all()
-    permission_classes = (IsAdminUser,)
-    serializer_class = UserSerializer
-
-    @action(detail=False,
-            methods=(['GET', 'PATCH']),
-            permission_classes=[IsAuthenticated])
-    def me(self, request):
-        """Получение данных текущего зарегистрированного пользователя."""
-        if request.method == 'GET':
-            serializer = UserSerializer(request.user)
-            return Response(serializer.data)
-
-        serializer = UserSerializer(
-            request.user, data=request.data, partial=True,
-        )
-        serializer.is_valid(raise_exception=True)
-        serializer.save(role=request.user.role)
-        return Response(serializer.data)
 
 
 @api_view(['POST'])
@@ -118,14 +94,6 @@ def signup_function(request):
             'Вы неверно указали почту!',
             status=status.HTTP_400_BAD_REQUEST
         )
-
-
-class CommentViewSet(viewsets.ModelViewSet):
-    pass
-
-
-class ReviewViewSet(viewsets.ModelViewSet):
-    pass
 
 
 @api_view(['POST'])
