@@ -27,25 +27,27 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class TitleSerializer(serializers.ModelSerializer):
     """Сериализатор произведения."""
-    
     genre = GenreSerializer(read_only=True, many=True)
     category = CategorySerializer(read_only=True)
     rating = serializers.IntegerField(required=False)
 
     class Meta:
         model = Title
-        fields = '__all__'
+        fields = ('id', 'name', 'year', 'rating',
+                  'description', 'genre', 'category')
         read_only_fields = ('id',)
 
 
 class GetTitleSerializer(serializers.ModelSerializer):
-    genre = GenreSerializer(many=True)
-    category = CategorySerializer()
-    rating = serializers.SerializerMethodField()
+    genre = serializers.SlugRelatedField(
+        many=True, slug_field='slug', queryset=Genre.objects.all())
+    category = serializers.SlugRelatedField(
+        slug_field='slug', queryset=Category.objects.all())
 
     class Meta:
         model = Title
-        fields = '__all__'
+        fields = ('id', 'name', 'year', 'description',
+                  'genre', 'category')
 
     def get_rating(self, obj):
         rating = obj.reviews.aggregate(Avg('score'))
