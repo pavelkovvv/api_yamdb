@@ -23,7 +23,7 @@ from .serializers import (UserSerializer, SignUpSerializer,
                           CategorySerializer, ReviewSerializer,
                           CommentSerializer)
 
-from .utils import (generate_confirmation_code_and_send_email)
+from .utils import generate_confirmation_code_and_send_email
 
 
 class TitleViewSet(viewsets.ModelViewSet):

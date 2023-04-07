@@ -84,7 +84,127 @@ python manage.py runserver
 
 **comments** - комментарии к отзывам. Комментарий привязан к определённому отзыву.
 
-## Документация к API доступна после запуска
+## Примеры запросов к различным ресурсам API
+
+### Ресурс Auth (регистрация пользователей и выдача токенов)
+
+Request (Регистрация нового пользователя):
+
+<span style="color:blue;font-weight:700;font-size:20px">
+    POST
+</span>
+<span style="font-weight:700;font-size:16px">
+    /api/v1/auth/signup/
+</span>
+
 ```
-http://127.0.0.1:8000/redoc/
+{
+    "email": "user@example.com",
+    "username": "string"
+}   
 ```
+
+Response:
+```
+{
+    "email": "string",
+    "username": "string"
+}
++ приходит код на указанный email
+```
+
+Request (Получение JWT-токена):
+
+<span style="color:blue;font-weight:700;font-size:20px">
+    POST
+</span>
+<span style="font-weight:700;font-size:16px">
+    /api/v1/auth/token/
+</span>
+
+```
+{
+    "username": "string",
+    "confirmation_code": "string"
+}
+```
+
+Response:
+```
+{
+    "token": "string"
+}
+```
+
+### Ресурс Categories (категории (типы) произведений)
+
+Request (Получение списка всех категорий):
+
+<span style="color:green;font-weight:700;font-size:20px">
+    GET
+</span>
+<span style="font-weight:700;font-size:16px">
+    /api/v1/categories/
+</span>
+
+Response:
+```
+{
+    "count": 0,
+    "next": "string",
+    "previous": "string",
+    "results": [
+        {
+            "name": "string",
+            "slug": "string"
+        }
+    ]
+}
+```
+
+Request (Добавление новой категории):
+
+<span style="color:blue;font-weight:700;font-size:20px">
+    POST
+</span>
+<span style="font-weight:700;font-size:16px">
+    /api/v1/categories/
+</span>
+
+```
+{
+  "name": "string",
+  "slug": "string"
+}
+```
+Response:
+```
+{
+  "name": "string",
+  "slug": "string"
+}
+```
+
+Request (Удаление категории):
+
+<span style="color:red;font-weight:700;font-size:20px">
+    DELETE
+</span>
+<span style="font-weight:700;font-size:16px">
+    /api/v1/categories/{slug}/
+</span>
+
+Response:
+```
+{
+  "detail": "Учетные данные не были предоставлены."
+}
+```
+
+### Работа со всеми остальными ресурсами производится аналогично
+
+
+## Полная документация к проекту
+
+Документация для API доступна по адресу ```/redoc/``` 
+(только после запуска проекта).

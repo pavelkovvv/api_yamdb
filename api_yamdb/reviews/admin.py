@@ -15,4 +15,3 @@ class CommentAdmin(admin.ModelAdmin):
     list_display = ('pk', 'text', 'pub_date', 'author', 'review')
     empty_value_display = '-пусто-'
     ordering = ('-pk',)
-    
