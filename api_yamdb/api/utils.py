@@ -21,5 +21,3 @@ def generate_confirmation_code_and_send_email(username, mail):
     from_email = EMAIL_ADMIN
     recipient_list = [mail, ]
     send_mail(subject, message, from_email, recipient_list)
-
-

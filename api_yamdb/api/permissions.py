@@ -22,12 +22,10 @@ class AuthorOrModerOrAdmin(permissions.BasePermission):
         return request.user.is_authenticated
 
     def has_object_permission(self, request, view, obj):
-        return (
-            request.user.is_moderator or
-            request.user.is_admin or
-            request.user.is_staff or
-            obj.author == request.user
-        )
+        return (request.user.is_moderator
+                or request.user.is_admin
+                or request.user.is_staff
+                or obj.author == request.user)
 
 
 class OnlyAdmin(permissions.BasePermission):
@@ -35,13 +33,12 @@ class OnlyAdmin(permissions.BasePermission):
     только администратору"""
 
     def has_permission(self, request, view):
-        return (
-                request.user.is_staff
+        return (request.user.is_staff
                 or (
                     request.user.is_authenticated
                     and request.user.is_admin
-                )
-        )
+                ))
+
 
 class IsAuthorAdminModeratorOrReadOnly(permissions.BasePermission):
     """Разрешение, позволяющее добавлять, удалять и редактировать объекты
@@ -52,7 +49,7 @@ class IsAuthorAdminModeratorOrReadOnly(permissions.BasePermission):
             request.method in permissions.SAFE_METHODS
             or request.user.is_authenticated
         )
-    
+
     def has_object_permission(self, request, view, obj):
         return (
             request.method in permissions.SAFE_METHODS
