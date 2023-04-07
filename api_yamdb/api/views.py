@@ -28,9 +28,9 @@ from .utils import generate_confirmation_code_and_send_email
 
 class TitleViewSet(viewsets.ModelViewSet):
     """ViewSet произведения."""
-    queryset = Title.objects.annotate(
+    queryset = Title.objects.all().annotate(
         rating=Avg('reviews__score')).order_by(
-        'category', 'genre'
+        'category', 'genre', 'name', 'year'
     )
     serializer_class = TitleSerializer
     filter_backends = (DjangoFilterBackend,)

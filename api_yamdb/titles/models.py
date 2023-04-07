@@ -1,6 +1,6 @@
 from django.db import models
-from django.utils import timezone
-from django.core.validators import MaxValueValidator
+
+from .validators import my_year_validator
 
 
 class Genre(models.Model):
@@ -47,9 +47,7 @@ class Title(models.Model):
         max_length=256,
         verbose_name='Название')
     year = models.IntegerField(
-        validators=[
-            MaxValueValidator(timezone.now().year)
-        ],
+        validators=[my_year_validator],
         verbose_name='Год')
     category = models.ForeignKey(
         Category, on_delete=models.SET_NULL,

@@ -1,4 +1,3 @@
-from django.db.models import Avg
 from rest_framework import serializers
 
 from django.core.validators import RegexValidator
@@ -48,10 +47,6 @@ class GetTitleSerializer(serializers.ModelSerializer):
         model = Title
         fields = ('id', 'name', 'year', 'description',
                   'genre', 'category')
-
-    def get_rating(self, obj):
-        rating = obj.reviews.aggregate(Avg('score'))
-        return rating.get('score__avg')
 
 
 class UserSerializer(serializers.ModelSerializer):
