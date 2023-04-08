@@ -100,8 +100,8 @@ def token_function(request):
     serializer.is_valid(raise_exception=True)
     user = get_object_or_404(User,
                              username=serializer.validated_data['username'])
-    if (user.confirmation_code ==
-            serializer.validated_data['confirmation_code']):
+    if (user.confirmation_code == serializer.validated_data['confirmation'
+                                                            '_code']):
         refresh_token = RefreshToken.for_user(user)
         access_token = str(refresh_token.access_token)
         return Response({'token': access_token}, status=status.HTTP_200_OK)
@@ -109,7 +109,6 @@ def token_function(request):
         'Неверный код подтверждения!',
         status=status.HTTP_400_BAD_REQUEST
     )
-
 
 
 class UserViewSet(viewsets.ModelViewSet):
