@@ -74,16 +74,20 @@ def signup_function(request):
         serializer = SignUpSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        generate_confirmation_code_and_send_email(data['username'],
-                                                  data['email'])
+        generate_confirmation_code_and_send_email(
+            serializer.validated_data['username'],
+            serializer.validated_data['email']
+        )
         return Response(serializer.data, status=status.HTTP_200_OK)
     user = get_object_or_404(User, username=username)
     serializer = SignUpSerializer(user, data=request.data, partial=True)
     serializer.is_valid(raise_exception=True)
     if serializer.validated_data['email'] == user.email:
         serializer.save()
-        generate_confirmation_code_and_send_email(data['username'],
-                                                  data['email'])
+        generate_confirmation_code_and_send_email(
+            serializer.validated_data['username'],
+            serializer.validated_data['email']
+        )
         return Response(serializer.data, status=status.HTTP_200_OK)
     return Response(
         'Вы неверно указали почту!',
