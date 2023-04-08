@@ -50,10 +50,6 @@ class GetTitleSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'year', 'description',
                   'genre', 'category')
 
-    def get_rating(self, obj):
-        rating = obj.reviews.aggregate(Avg('score'))
-        return rating.get('score__avg')
-
 
 class UserSerializer(serializers.ModelSerializer):
 
