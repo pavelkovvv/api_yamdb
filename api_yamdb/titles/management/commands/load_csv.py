@@ -1,48 +1,15 @@
-""" import csv
-
-from django.core.management import BaseCommand
-from django.conf import settings
-
-from reviews.models import Comment, Review
-from titles.models import Category, Genre, Title
-from users.models import User
-
-
-MODELS = {
-    User: 'users.csv',
-    Category: 'category.csv',
-    Genre: 'genre.csv',
-    Title: 'titles.csv',
-    Review: 'review.csv',
-    Comment: 'comments.csv',
-}
-
-
-class Command(BaseCommand):
-
-    def handle(self, *args, **kwargs):
-        for model, csv_f in MODELS.items():
-            with open(
-                f'{settings.BASE_DIR}/static/data/{csv_f}',
-                'r',
-                encoding='utf-8'
-            ) as csv_file:
-                reader = csv.DictReader(csv_file)
-                model.objects.bulk_create(
-                    model(**data) for data in reader)
-        self.stdout.write(self.style.SUCCESS('Loaded')) """
 import csv
 import os
 from typing import List
 
 from django.core.management import BaseCommand, CommandError
 from django.shortcuts import get_object_or_404
+
+from api_yamdb.settings import BASE_DIR
 from reviews.models import Comment, Review
 from titles.models import Category, Genre, Title
 from users.models import User
 
-
-from api_yamdb.settings import BASE_DIR
 
 CSV_FILES = [
     ['users.csv', User],
