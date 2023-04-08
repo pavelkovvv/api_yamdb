@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.contrib.auth import get_user_model
 
 
 class User(AbstractUser):
@@ -44,33 +43,24 @@ class User(AbstractUser):
         default=None
     )
 
+    def __str__(self):
+        return self.username
+
     class Meta:
         ordering = ('username',)
-        unique_together = ('username', 'email')
-
-        def __str__(self):
-            return self.username
+        constraints = [
+            models.UniqueConstraint(fields=('username', 'email'),
+                                    name='unique_username&email')
+        ]
 
     @property
     def is_user(self):
-        if self.role == self.USER:
-            return True
-        else:
-            return False
+        return self.role == self.USER
 
     @property
     def is_moderator(self):
-        if self.role == self.MODERATOR:
-            return True
-        else:
-            return False
+        return self.role == self.MODERATOR
 
     @property
     def is_admin(self):
-        if self.role == self.ADMIN:
-            return True
-        else:
-            return False
-
-
-User = get_user_model()
+        return self.role == self.ADMIN
