@@ -1,5 +1,4 @@
 from rest_framework import status, viewsets, filters
-
 from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -75,16 +74,20 @@ def signup_function(request):
         serializer = SignUpSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        generate_confirmation_code_and_send_email(data['username'],
-                                                  data['email'])
+        generate_confirmation_code_and_send_email(
+            serializer.validated_data['username'],
+            serializer.validated_data['email']
+        )
         return Response(serializer.data, status=status.HTTP_200_OK)
     user = get_object_or_404(User, username=username)
     serializer = SignUpSerializer(user, data=request.data, partial=True)
     serializer.is_valid(raise_exception=True)
     if serializer.validated_data['email'] == user.email:
         serializer.save()
-        generate_confirmation_code_and_send_email(data['username'],
-                                                  data['email'])
+        generate_confirmation_code_and_send_email(
+            serializer.validated_data['username'],
+            serializer.validated_data['email']
+        )
         return Response(serializer.data, status=status.HTTP_200_OK)
     return Response(
         'Вы неверно указали почту!',
@@ -100,8 +103,8 @@ def token_function(request):
     serializer.is_valid(raise_exception=True)
     user = get_object_or_404(User,
                              username=serializer.validated_data['username'])
-    if (user.confirmation_code
-            == serializer.validated_data['confirmation_code']):
+    if (user.confirmation_code == serializer.validated_data['confirmation'
+                                                            '_code']):
         refresh_token = RefreshToken.for_user(user)
         access_token = str(refresh_token.access_token)
         return Response({'token': access_token}, status=status.HTTP_200_OK)

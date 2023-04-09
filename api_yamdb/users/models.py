@@ -43,15 +43,15 @@ class User(AbstractUser):
         default=None
     )
 
-    def __str__(self):
-        return self.username
-
     class Meta:
         ordering = ('username',)
         constraints = [
             models.UniqueConstraint(fields=('username', 'email'),
                                     name='unique_username&email')
         ]
+
+    def __str__(self):
+        return self.username
 
     @property
     def is_user(self):
