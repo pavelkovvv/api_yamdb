@@ -1,6 +1,6 @@
 from django.db import models
 
-from .validators import my_year_validator
+from .validators import year_validator
 
 
 class Genre(models.Model):
@@ -47,7 +47,7 @@ class Title(models.Model):
         max_length=256,
         verbose_name='Название')
     year = models.IntegerField(
-        validators=[my_year_validator],
+        validators=[year_validator],
         verbose_name='Год')
     category = models.ForeignKey(
         Category, on_delete=models.SET_NULL,
