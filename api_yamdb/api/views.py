@@ -1,26 +1,25 @@
-from rest_framework import status, viewsets, filters
-
-from rest_framework.decorators import api_view, action
+from django.db.models import Avg
+from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters, status, viewsets
+from rest_framework.decorators import action, api_view
+from rest_framework.filters import SearchFilter
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.filters import SearchFilter
-from django.db.models import Avg
-from django_filters.rest_framework import DjangoFilterBackend
-from django.shortcuts import get_object_or_404
-
-from users.models import User
-from titles.models import Title, Genre, Category
 from reviews.models import Review
-from .mixins import ModelMixinSet
+from titles.models import Category, Genre, Title
+from users.models import User
+
 from .filters import TitleFilter
-from .permissions import (IsAdminOrReadOnlyPermission, OnlyAdmin,
-                          IsAuthorAdminModeratorOrReadOnly)
-from .serializers import (UserSerializer, SignUpSerializer,
-                          JWTTokenSerializer, GetTitleSerializer,
-                          TitleSerializer, GenreSerializer,
-                          CategorySerializer, ReviewSerializer,
-                          CommentSerializer, ResponseSerializer)
+from .mixins import ModelMixinSet
+from .permissions import (IsAdminOrReadOnlyPermission,
+                          IsAuthorAdminModeratorOrReadOnly, OnlyAdmin)
+from .serializers import (CategorySerializer, CommentSerializer,
+                          GenreSerializer, GetTitleSerializer,
+                          JWTTokenSerializer, ResponseSerializer,
+                          ReviewSerializer, SignUpSerializer, TitleSerializer,
+                          UserSerializer)
 from .utils import generate_confirmation_code_and_send_email
 
 

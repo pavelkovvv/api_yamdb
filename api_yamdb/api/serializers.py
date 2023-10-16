@@ -1,13 +1,11 @@
-from rest_framework import serializers, status
-
-from django.db.models import Avg
 from django.core.validators import RegexValidator
+from django.db.models import Avg
 from django.shortcuts import get_object_or_404
+from rest_framework import serializers, status
 from rest_framework.response import Response
-
+from reviews.models import Comment, Review
+from titles.models import Category, Genre, Title
 from users.models import User
-from titles.models import Genre, Category, Title
-from reviews.models import Review, Comment
 
 
 class GenreSerializer(serializers.ModelSerializer):
